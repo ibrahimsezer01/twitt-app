@@ -6,22 +6,30 @@ const prisma = new PrismaClient()
 
 // create tweet
 router.post("/", async (req, res) => {
-    const { content, image, userId } = req.body
+    const { content, image } = req.body
+    const authHeader = req.headers["authorization"]
+    const trytis = req.headers
+    console.log(authHeader);
+    console.log(trytis);
+    
+    
 
-    try {
-        const result = await prisma.tweet.create({
-            data: {
-                content: content,
-                image: image,
-                userId: userId,
-            }
-        })
+    res.sendStatus(200)
 
-        res.json(result)
+    // try {
+    //     const result = await prisma.tweet.create({
+    //         data: {
+    //             content: content,
+    //             image: image,
+    //             userId: userId,
+    //         }
+    //     })
 
-    } catch (error) {
-        res.status(401).json("email name username should be unique")
-    }
+    //     res.json(result)
+
+    // } catch (error) {
+    //     res.status(401).json("email name username should be unique")
+    // }
 })
 
 // get tweets
