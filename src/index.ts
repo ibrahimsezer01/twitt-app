@@ -1,5 +1,8 @@
 import express from "express"
 
+// middlewares
+import { authenticateToken } from "./middlewares/authMiddleware"
+
 const app = express()
 app.use(express.json())
 
@@ -11,8 +14,8 @@ app.get("/", (req, res) => {
 import userRoutes from "./router/userRoutes"
 import tweetRoutes from "./router/twettRoutes"
 import authRoutes from "./router/authRoutes"
-app.use("/user", userRoutes)
-app.use("/tweet", tweetRoutes)
+app.use("/user", authenticateToken, userRoutes)
+app.use("/tweet", authenticateToken, tweetRoutes)
 app.use("/auth", authRoutes)
 
 app.listen(3971, () => {

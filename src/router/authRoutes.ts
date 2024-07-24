@@ -8,6 +8,7 @@ const prisma = new PrismaClient()
 const EMAIL_TOKEN_EXPIRATION_MINUTES = 10
 const AUTHENTICATION_EXPIRATION_HOURS = 12
 
+const JWT_SECRET = "JWT_SUPER_SECRET_KEY"
 
 // generate emailToken
 function generateEmailToken(): string {
@@ -18,7 +19,7 @@ function generateEmailToken(): string {
 function generateAuthToken(tokenId: number): string {
     const jwtPayload = { tokenId };
   
-    return jwt.sign(jwtPayload, "JWT_SUPER_SECRET_KEY", {
+    return jwt.sign(jwtPayload, JWT_SECRET, {
       algorithm: 'HS256',
       noTimestamp: true,
     });
@@ -109,13 +110,9 @@ router.post("/authenticate", async (req, res) => {
         data: { valid: false },
       });
 
-
     // generate the jwt token
     const authToken = generateAuthToken(apiToken.id)
     
-
-    
-    console.log(authToken);
     res.json({ authToken })
 })
 

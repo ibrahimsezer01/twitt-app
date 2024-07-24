@@ -1,44 +1,38 @@
 import { Router } from "express"
 import { PrismaClient } from "@prisma/client"
+import jwt from "jsonwebtoken"
 
 const router = Router()
 const prisma = new PrismaClient()
 
+const JWT_SECRET = "JWT_SUPER_SECRET_KEY"
+
 // create tweet
 router.post("/", async (req, res) => {
     const { content, image } = req.body
-    const authHeader = req.headers["authorization"]
-    const trytis = req.headers
-    console.log(authHeader);
-    console.log(trytis);
-    
-    
 
-    res.sendStatus(200)
+    // @ts-ignore
+    const user = req.user
 
-    // try {
-    //     const result = await prisma.tweet.create({
-    //         data: {
-    //             content: content,
-    //             image: image,
-    //             userId: userId,
-    //         }
-    //     })
+    try {
+        const result = await prisma.tweet.create({
+            data: {
+                content: content,
+                image: image,
+                userId: user.id,
+            }
+        })
 
-    //     res.json(result)
+        res.json(result)
 
-    // } catch (error) {
-    //     res.status(401).json("email name username should be unique")
-    // }
+    } catch (error) {
+        res.status(401).json("email name username should be unique")
+    }
 })
 
 // get tweets
 router.get("/", async (req, res) => {
     const allTweet = await prisma.tweet.findMany({
-        // getting all data
-        // include: { user: true }
-
-        // or select just selected data
         include: {
             user: {
                 select: {
@@ -49,19 +43,6 @@ router.get("/", async (req, res) => {
                 }
             }
         }
-
-        // select: {
-        //     id: true,
-        //     content: true,
-        //     user: {
-        //         select: {
-        //             id: true,
-        //             name: true,
-        //             username: true,
-        //             image: true
-        //         }
-        //     }
-        // }
     })
     res.status(200).json(allTweet)
 })
